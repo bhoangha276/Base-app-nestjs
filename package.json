@@ -1,8 +1,8 @@
 {
-  "name": "nest-begin",
+  "name": "base-app-nestjs",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "hahoang",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
