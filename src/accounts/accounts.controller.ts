@@ -1,22 +1,10 @@
-import {
-  Bind,
-  Body,
-  Controller,
-  Delete,
-  Dependencies,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { AccountsService } from './accounts.service'
 import { CreateAccountDto } from './dto/create-account.dto'
 import { Account } from './interfaces/account.interface'
 import { UpdateAccountDto } from './dto/update-account.dto'
 
 @Controller('accounts')
-@Dependencies(AccountsService)
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
