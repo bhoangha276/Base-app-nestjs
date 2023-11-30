@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { Account } from './interfaces/account.interface'
+import { CreateAccountDto } from './dto/create-account.dto'
+import { UpdateAccountDto } from './dto/update-account.dto'
 
 @Injectable()
 export class AccountsService {
   private readonly accounts: Account[] = []
   private readonly account: Account = {
-    employeeID: 'string',
-    userID: 'string',
-
     role: 'string',
     email: 'string',
     password: 'string',
@@ -17,7 +16,10 @@ export class AccountsService {
     status: true,
   }
 
-  findAll(): Account[] {
+  findAll(role?: 'admin' | 'employee' | 'customer'): Account[] {
+    if (role) {
+    }
+
     return this.accounts
   }
 
@@ -46,11 +48,11 @@ export class AccountsService {
     return this.account
   }
 
-  create(account: Account): Account {
-    return this.account
+  create(account: CreateAccountDto) {
+    return account
   }
 
-  update(account: Account) {}
+  update(account: UpdateAccountDto) {}
 
   delete(id: string) {}
 

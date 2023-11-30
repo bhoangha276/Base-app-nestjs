@@ -1,7 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  ValidationPipe,
+} from '@nestjs/common'
 import { AccountsService } from './accounts.service'
-import { CreateAccountDto } from './dto/create-account.dto'
 import { Account } from './interfaces/account.interface'
+import { CreateAccountDto } from './dto/create-account.dto'
 import { UpdateAccountDto } from './dto/update-account.dto'
 
 @Controller('accounts')
@@ -21,6 +31,7 @@ export class AccountsController {
   ): Promise<{ success: number; data: Account[]; Paging }> {
     const [accounts, pagination, totalPage, total] =
       await this.accountsService.findByPagination(query)
+
     return {
       success: 1,
       data: accounts,
@@ -44,23 +55,28 @@ export class AccountsController {
   }
 
   @Post()
-  async create(@Body() createAccountDto: CreateAccountDto): Promise<{ success: number }> {
-    await this.accountsService.create(createAccountDto)
-    return { success: 1 }
+  async create(
+    @Body(ValidationPipe) createAccountDto: CreateAccountDto,
+  ): Promise<{ success: number; data }> {
+    const account = await this.accountsService.create(createAccountDto)
+
+    return { success: 1, data: account }
   }
 
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateAccountDto: UpdateAccountDto,
-  ): Promise<{ success: number; data: Account }> {
+    @Body(ValidationPipe) updateAccountDto: UpdateAccountDto,
+  ): Promise<{ success: number }> {
     await this.accountsService.update(updateAccountDto)
-    return { success: 1, data: updateAccountDto }
+
+    return { success: 1 }
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<{ success: number }> {
     await this.accountsService.delete(id)
+
     return {
       success: 1,
     }
@@ -69,6 +85,7 @@ export class AccountsController {
   @Delete('/delete-permanently:id')
   async deletePermanently(@Param('id') id: string): Promise<{ success: number }> {
     await this.accountsService.deletePermanently(id)
+
     return { success: 1 }
   }
 }

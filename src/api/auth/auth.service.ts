@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { AccountsService } from '../accounts/accounts.service'
-import { Account } from '../accounts/interfaces/account.interface'
+import { SignupAccountDto } from './dto/signup-account.dto'
+import { LoginAccountDto } from './dto/login-account.dto'
 
 @Injectable()
 export class AuthService {
@@ -15,9 +16,9 @@ export class AuthService {
     return null
   }
 
-  async signUp(account: Account) {}
+  async signUp(account: SignupAccountDto) {}
 
-  async login(account: Account) {}
+  async login(account: LoginAccountDto) {}
 
   async verify(id: string, token: string) {}
 }
