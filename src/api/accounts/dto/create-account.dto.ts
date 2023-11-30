@@ -1,10 +1,14 @@
-import { Account } from '../interfaces/account.interface'
+import { IsEmail, IsNotEmpty, IsEnum, MinLength } from 'class-validator'
+import { Role } from './role.enum'
 
-export interface CreateAccountDto extends Account {
-  employeeID: string
-  userID: string
+export class CreateAccountDto {
+  @IsEnum(Role, { message: 'Valid role required!' })
+  role!: 'admin' | 'employee' | 'customer'
 
-  role: string
-  email: string
-  password: string
+  @IsEmail()
+  email!: string
+
+  @IsNotEmpty()
+  @MinLength(5)
+  password!: string
 }

@@ -1,10 +1,4 @@
-import { Account } from '../interfaces/account.interface'
+import { PartialType } from '@nestjs/mapped-types'
+import { CreateAccountDto } from './create-account.dto'
 
-export interface UpdateAccountDto extends Account {
-  employeeID: string
-  userID: string
-
-  role: string
-  email: string
-  password: string
-}
+export class UpdateAccountDto extends PartialType(CreateAccountDto) {}
