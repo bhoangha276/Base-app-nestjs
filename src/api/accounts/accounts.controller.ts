@@ -10,7 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common'
 import { AccountsService } from './accounts.service'
-import { Account } from './interfaces/account.interface'
+import { Account } from './schemas/account.schema'
 import { CreateAccountDto } from './dto/create-account.dto'
 import { UpdateAccountDto } from './dto/update-account.dto'
 
@@ -68,7 +68,7 @@ export class AccountsController {
     @Param('id') id: string,
     @Body(ValidationPipe) updateAccountDto: UpdateAccountDto,
   ): Promise<{ success: number }> {
-    await this.accountsService.update(updateAccountDto)
+    await this.accountsService.update(id, updateAccountDto)
 
     return { success: 1 }
   }
