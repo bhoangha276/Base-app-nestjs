@@ -1,31 +1,25 @@
 import { Injectable } from '@nestjs/common'
-import { Account } from './interfaces/account.interface'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
+
+import { Account } from './schemas/account.schema'
 import { CreateAccountDto } from './dto/create-account.dto'
 import { UpdateAccountDto } from './dto/update-account.dto'
 
 @Injectable()
 export class AccountsService {
-  private readonly accounts: Account[] = []
-  private readonly account: Account = {
-    role: 'string',
-    email: 'string',
-    password: 'string',
+  constructor(@InjectModel(Account.name) private accountModel: Model<Account>) {}
 
-    emailVerified: true,
-    phoneVerified: true,
-    status: true,
-  }
-
-  findAll(role?: 'admin' | 'employee' | 'customer'): Account[] {
+  async findAll(role?: 'admin' | 'employee' | 'customer'): Promise<Account[]> {
     if (role) {
     }
 
-    return this.accounts
+    return await this.accountModel.find()
   }
 
-  findByPagination(
+  async findByPagination(
     query,
-  ): [Account[], pagination: { page; limit }, totalPage: number, total: number] {
+  ): Promise<[Account[], pagination: { page; limit }, totalPage: number, total: number]> {
     const pagination = {
       page: query.page > 0 ? Number(query.page) : 1,
       limit: query.limit > 0 ? Number(query.limit) : 2,
@@ -33,28 +27,51 @@ export class AccountsService {
     }
     pagination.skip = (pagination.page - 1) * pagination.limit
 
-    const [accounts, total] = [[], 111]
+    const total = await this.accountModel.find().countDocuments()
+    let accounts = []
+
+    if (total > pagination.skip) {
+      accounts = await this.accountModel
+        .find()
+        .sort()
+        .skip(pagination.skip)
+        .limit(pagination.limit)
+    }
+
+    if (total <= pagination.skip) {
+      accounts = await this.accountModel.find()
+    }
 
     let totalPage = Math.ceil(total / pagination.limit)
 
     return [accounts, pagination, totalPage, total]
   }
 
-  findByID(id: string): Account {
-    return this.account
+  async findByID(id: string): Promise<Account> {
+    return await this.accountModel.findById(id)
   }
 
-  findByEmail(email: string): Account {
-    return this.account
+  async findByEmail(email: string): Promise<Account> {
+    return await this.accountModel.findOne({ email: email })
   }
 
-  create(account: CreateAccountDto) {
-    return account
+  async create(account: CreateAccountDto): Promise<Account> {
+    return await this.accountModel.create({ ...account })
   }
 
-  update(account: UpdateAccountDto) {}
+  async update(id: string, account: UpdateAccountDto): Promise<Account> {
+    return this.accountModel.findOneAndUpdate({ _id: id }, account, { new: true })
+  }
 
-  delete(id: string) {}
+  async delete(id: string) {
+    return this.accountModel.findOneAndUpdate(
+      { _id: id },
+      { isDelete: true },
+      { new: true },
+    )
+  }
 
-  deletePermanently(id: string) {}
+  async deletePermanently(id: string) {
+    return await this.accountModel.findOneAndDelete({ _id: id })
+  }
 }
