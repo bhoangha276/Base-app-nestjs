@@ -66,7 +66,7 @@ export class AccountsService {
   async delete(id: string) {
     return this.accountModel.findOneAndUpdate(
       { _id: id },
-      { isDelete: true },
+      { isDeleted: true },
       { new: true },
     )
   }

@@ -10,19 +10,19 @@ export enum Role {
   timestamps: true,
 })
 export class Account {
-  @Prop()
+  @Prop({ required: true, enum: Role, default: Role.CUSTOMER })
   role: Role
-  @Prop()
+  @Prop({ required: true, unique: true, trim: true, maxlength: 255 })
   email: string
-  @Prop()
+  @Prop({ required: true })
   password: string
 
-  @Prop()
+  @Prop({ default: false })
   emailVerified: boolean
-  @Prop()
+  @Prop({ default: false })
   phoneVerified: boolean
-  @Prop()
-  status: boolean
+  @Prop({ default: false })
+  isDeleted: boolean
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account)
